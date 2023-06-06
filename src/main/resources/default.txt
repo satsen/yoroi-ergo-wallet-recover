@@ -1,0 +1,15 @@
+# Enter your wallet key code here, after the equal sign:
+key=
+
+# The spending password of your wallet here
+password=
+
+# How many addresses you used (if you don't know, something like 10 is fine)
+address_count=10
+
+# The address everything should be sent to
+destination=
+
+# Donation percentage (only ERG will be donated).
+# Can be 0 if you don't want to donate anything to the tool's developer
+erg_donation_percentage=5%

@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+version = '1.0.0'
+
+application {
+    mainClass = 'satsen.yoroiergowalletrecover.Main'
+}
+
+compileJava {
+    options.release.set(17)
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.ergoplatform:ergo-appkit_2.12:5.0.2'
+}
+
+jar {
+    manifest.attributes('Main-Class': application.mainClass.get())
+    enabled = false
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+// Make builds reproducible
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
