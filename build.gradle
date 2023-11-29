@@ -4,7 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-version = '1.0.0'
+version = '1.0.1'
 
 application {
     mainClass = 'satsen.yoroiergowalletrecover.Main'
@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     implementation 'org.ergoplatform:ergo-appkit_2.12:5.0.2'
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
 }
 
 jar {

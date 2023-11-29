@@ -11,5 +11,5 @@ address_count=10
 destination=
 
 # Donation percentage (only ERG will be donated).
-# Can be 0 if you don't want to donate anything to the tool's developer
+# Can be 0% if you don't want to donate anything to the tool's developer
 erg_donation_percentage=5%

@@ -67,25 +67,12 @@ public class Main {
 			System.err.println("The destination address in the wallet.txt file is invalid");
 			return;
 		}
-		double tempDonationShare;
 		try {
-			DecimalFormat decimalFormat = new DecimalFormat("0%");
-			tempDonationShare = (double) decimalFormat.parse(properties.getProperty("erg_donation_percentage"));
-		} catch (ParseException e) {
-			System.err.println("The donation percentage specified in wallet.txt is invalid, please specify 0% if you do not want to donate");
-			return;
-		} catch (NullPointerException e) {
-			tempDonationShare = 0;
-		}
-		if (tempDonationShare > 1) {
-			System.err.println("The donation percentage specified in wallet.txt is more than 100%, please fix it");
+			donationShare = getDonationShare(properties);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 			return;
 		}
-		if (tempDonationShare < 0) {
-			System.err.println("The donation percentage specified in wallet.txt is negative, please specify 0% if you do not want to donate");
-			return;
-		}
-		donationShare = tempDonationShare;
 
 		// Decrypt the wallet
 		byte[] bip32KeyBytes = KeyDecryption.decrypt(encryptedKey, password);
@@ -158,7 +145,7 @@ public class Main {
 			SignedTransaction signedTx = proverImpl.sign(unsignedTx);
 			return ctx.sendTransaction(signedTx);
 		});
-		System.out.println("SUCCESS: The transaction has been submitted, view status at https://explorer.ergoplatform.com/en/transactions/" + txIdQuoted.substring(0, txIdQuoted.length() - 1));
+		System.out.println("SUCCESS: The transaction has been submitted, view status at https://explorer.ergoplatform.com/en/transactions/" + txIdQuoted.substring(1, txIdQuoted.length() - 1));
 	}
 
 	private static List<InputBox> selectAllBoxes(List<Address> addresses, BlockchainContext ctx) {
@@ -195,5 +182,24 @@ public class Main {
 
 	private static P2PKAddress p2pk(DLogProtocol.ProveDlog proveDlog) {
 		return P2PKAddress.apply(proveDlog, new ErgoAddressEncoder(ErgoAddressEncoder.MainnetNetworkPrefix()));
+	}
+
+
+
+	private static double getDonationShare(Properties properties) {
+		double share;
+		try {
+			DecimalFormat decimalFormat = new DecimalFormat("0%");
+			share = decimalFormat.parse(properties.getProperty("erg_donation_percentage")).doubleValue();
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("The donation percentage specified in wallet.txt is invalid, please specify 0% if you do not want to donate");
+		} catch (NullPointerException e) {
+			share = 0;
+		}
+		if (share > 1)
+			throw new IllegalArgumentException("The donation percentage specified in wallet.txt is more than 100%, please fix it");
+		if (share < 0)
+			throw new IllegalArgumentException("The donation percentage specified in wallet.txt is negative, please specify 0% if you do not want to donate");
+		return share;
 	}
 }
